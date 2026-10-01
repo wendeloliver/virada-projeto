@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VIRADA · Viva a carreira antes de mudar</title>
+<style>
+:root{--bg:#07080f;--bg2:#1a1340;--card:rgba(255,255,255,.06);--tx:#f1f2fa;--mu:#9a9fbd;--br:rgba(255,255,255,.13);--ac:#8b6bff;--ac2:#22e3b8;--hot:#ff5c8a;--acx:#07080f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f4fb;--bg2:#e0dcff;--card:rgba(255,255,255,.85);--tx:#15162b;--mu:#5c6083;--br:rgba(20,20,60,.13);--ac:#5b3fe6;--ac2:#08a888;--hot:#e0356a;--acx:#fff}}
+:root[data-theme="light"]{--bg:#f4f4fb;--bg2:#e0dcff;--card:rgba(255,255,255,.85);--tx:#15162b;--mu:#5c6083;--br:rgba(20,20,60,.13);--ac:#5b3fe6;--ac2:#08a888;--hot:#e0356a;--acx:#fff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--tx);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(800px 500px at 85% -10%,var(--bg2),transparent),var(--bg)}
+main{max-width:680px;margin:0 auto;padding:22px 16px 60px;animation:in .45s}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}@keyframes blink{50%{opacity:.25}}@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.logo{font-weight:900;letter-spacing:3px;font-size:14px;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:34px;line-height:1.1;margin:16px 0 8px;letter-spacing:-1px}h1 em{font-style:normal;background:linear-gradient(90deg,var(--hot),var(--ac));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:17px;margin:0 0 8px}.mu{color:var(--mu);font-size:14px}
+.card{background:var(--card);border:1px solid var(--br);border-radius:20px;padding:16px;margin:12px 0;backdrop-filter:blur(12px)}
+input,textarea{width:100%;font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--br);border-radius:12px;padding:12px;margin-top:6px}textarea{min-height:72px;resize:vertical}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px;font:inherit;font-weight:800;color:var(--acx);background:linear-gradient(90deg,var(--ac),var(--ac2));cursor:pointer;margin-top:12px}.btn.g{background:var(--card);color:var(--tx);border:1px solid var(--br)}.btn:disabled{opacity:.4}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--br);border-radius:14px;padding:13px;margin-top:8px;cursor:pointer}.opt.on{border-color:var(--ac2);background:rgba(34,227,184,.12)}.opt:disabled:not(.on){opacity:.45}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:8px 0}
+.tag{font-size:12px;padding:2px 10px;border-radius:99px;background:rgba(139,107,255,.22);color:var(--ac)}
+.time{font-variant-numeric:tabular-nums;font-weight:900;color:var(--ac2);font-size:18px}
+.bar{height:8px;border-radius:9px;background:var(--br);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--hot),var(--ac2));transition:width .5s}#tm{background:var(--hot);transition:none}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--hot));display:grid;place-items:center;font-weight:800;color:#fff;flex:none}
+.typing span{display:inline-block;width:8px;height:8px;margin:0 2px;border-radius:50%;background:var(--mu);animation:blink 1s infinite}.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+.out{border-left:3px solid var(--ac2);padding:6px 12px;margin-top:10px;color:var(--mu)}
+.fe{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.fe button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--br);border-radius:14px;padding:12px 4px;cursor:pointer;font-size:22px}.fe small{display:block;font-size:12px;color:var(--mu)}
+.bars{display:flex;align-items:center;gap:10px;margin:8px 0}.bars .bar{flex:1}
+.pill{display:inline-block;margin:3px 4px 3px 0;padding:4px 11px;border-radius:99px;border:1px solid var(--br);font-size:13px}
+.toggle{display:flex;gap:10px;align-items:center;margin-top:12px}.toggle input{width:auto;margin:0}
+svg{width:100%;height:auto;display:block}.shake{animation:shake .3s}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+/* ===== CONFIG =====
+ Dentro do Claude (artifact) a IA funciona sozinha. Fora dele, aponte ENDPOINT para
+ um backend seu que receba {prompt} e devolva {text} (veja o exemplo enviado no chat). */
+const CONFIG={ENDPOINT:'/api/ai',SECONDS:40};
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={view:'home',prof:'',bg:'',press:true,day:null,i:0,ans:[],batt:[60],phase:'ask',chosen:'',outcome:'',typing:false,rep:null,err:'',msg:''},T=null;
+const hist=()=>{try{return JSON.parse(localStorage.getItem('virada_h')||'[]')}catch(e){return[]}};
+const save=h=>{try{localStorage.setItem('virada_h',JSON.stringify(h.slice(0,20)))}catch(e){}};
+async function ai(prompt){
+  if(window.claude&&claude.use){const sm=await claude.use('sample');if(sm)return sm.json(prompt,{modelTier:'default',cache:false})}
+  const r=await fetch(CONFIG.ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+  if(!r.ok)throw{code:'net'};
+  return JSON.parse(String((await r.json()).text).replace(/```json|```/g,'').trim());
+}
+const WAIT=[['Montando sua caixa de entrada…','Contratando um chefe difícil…','Agendando um imprevisto às 15h…'],['Lendo suas decisões…','Cruzando com sua bagagem…','Calculando seu encaixe…']];
+function load(k){S.view='load';let n=0;const t=()=>{if(S.view!=='load')return;S.msg=WAIT[k][n++%3];render();setTimeout(t,2500)};t()}
+function render(){clearInterval(T);({home,load:loading,day,report,hist:historyView})[S.view]()}
+
+function home(){const h=hist();
+  app.innerHTML=`<div class="logo">VIRADA</div><h1>Sua próxima carreira começa com um <em>dia de teste</em>.</h1>
+  <p class="mu">Antes de largar tudo, viva um dia real da profissão. Decisões sob pressão, chefes difíceis, imprevistos. No fim você descobre se aquilo te energiza ou te esgota, e o que já sabe fazer.</p>
+  <div class="card"><h2>Qual profissão você quer testar?</h2><input id="p" placeholder="Ex.: enfermeiro, product manager, chef, paralegal" value="${esc(S.prof)}">
+  <h2 style="margin-top:14px">O que você já fez? (trabalhos, estudos, hobbies)</h2><textarea id="b" placeholder="Ex.: 5 anos em atendimento, faço planilhas, organizo eventos">${esc(S.bg)}</textarea>
+  <label class="toggle"><input type="checkbox" id="pr" ${S.press?'checked':''}> <span>🔥 <b>Modo pressão</b> <span class="mu">(${CONFIG.SECONDS}s para decidir em cada situação)</span></span></label></div>
+  <button class="btn" onclick="begin()">Começar meu dia →</button>${S.err?`<p style="color:var(--hot)">${esc(S.err)}</p>`:''}
+  ${h.length?`<button class="btn g" onclick="S.view='hist';render()">Meus testes anteriores (${h.length})</button>`:''}`;
+}
+async function begin(){
+  S.prof=$('#p').value.trim();S.bg=$('#b').value.trim();S.press=$('#pr').checked;S.err='';
+  if(!S.prof||!S.bg){S.err='Preencha a profissão e sua bagagem.';return home()}
+  load(0);
+  try{
+    const d=await ai(`Você é um simulador de carreira. Crie um dia de trabalho realista (5 situações entre 09:00 e 17:00) de um(a) ${S.prof} em início de função, para alguém com esta bagagem: ${S.bg}.
+Responda SOMENTE JSON: {"intro":"1 frase que coloca a pessoa na cena","events":[{"time":"09:00","from":"nome e cargo","subject":"assunto","body":"2 a 3 frases com um dilema realista e urgente","tag":"Análise|Comunicação|Criatividade|Organização|Pessoas|Técnica|Pressão","options":[{"t":"ação em 1 frase","r":"consequência realista em 1 frase"},{"t":"...","r":"..."},{"t":"...","r":"..."}]}]}
+Varie as tags, inclua um conflito e um imprevisto, cada situação deve puxar a próxima, evite clichês. Português do Brasil.`);
+    if(!d||!Array.isArray(d.events)||d.events.length<3)throw{code:'bad'};
+    Object.assign(S,{day:d,i:0,ans:[],batt:[60],phase:'ask',chosen:'',outcome:'',view:'day'});next(true);
+  }catch(e){S.view='home';S.err=e.code==='not_granted'?'Você precisa permitir o uso da IA.':'Não consegui gerar agora. Verifique a conexão da IA e tente de novo.';render()}
+}
+function loading(){app.innerHTML=`<div class="logo">VIRADA</div><h1>${esc(S.msg)}</h1><div class="bar" style="margin-top:20px"><i style="width:60%"></i></div><p class="mu">Leva de 10 a 40 segundos.</p>`}
+function next(first){S.phase='ask';S.chosen='';S.outcome='';S.typing=!first||true;render();setTimeout(()=>{S.typing=false;render();if(S.press)startTimer()},700)}
+function startTimer(){let t=CONFIG.SECONDS;clearInterval(T);T=setInterval(()=>{t-=.2;const b=$('#tm');if(b)b.style.width=Math.max(0,t/CONFIG.SECONDS*100)+'%';if(t<=8&&b)b.parentNode.classList.add('shake');if(t<=0){clearInterval(T);choose('(sem resposta a tempo)','Você travou e o problema piorou enquanto pensava.',-1)}},200)}
+function day(){
+  const ev=S.day.events[S.i],b=S.batt[S.batt.length-1],ask=S.phase==='ask';
+  const head=`<div class="row"><span class="logo">VIRADA</span><span class="mu">Situação ${S.i+1}/${S.day.events.length} · ⚡ ${b}%</span></div><div class="bar"><i style="width:${b}%"></i></div>${S.i===0?`<p class="mu" style="margin-top:12px">${esc(S.day.intro)}</p>`:''}`;
+  if(S.typing)return app.innerHTML=head+`<div class="card"><div class="row"><span class="time">${esc(ev.time)}</span></div><div class="typing"><span></span><span></span><span></span></div><p class="mu">${esc(ev.from)} está escrevendo…</p></div>`;
+  app.innerHTML=head+`<div class="card"><div class="row"><span class="time">${esc(ev.time)}</span><span class="tag">${esc(ev.tag)}</span></div>
+  <div class="row" style="justify-content:flex-start"><div class="av">${esc(ev.from[0]||'?')}</div><div><b>${esc(ev.subject)}</b><br><span class="mu">${esc(ev.from)}</span></div></div><p>${esc(ev.body)}</p>
+  ${ask&&S.press?'<div class="bar"><i id="tm" style="width:100%"></i></div>':''}
+  ${ev.options.map((o,j)=>`<button class="opt ${S.chosen===o.t?'on':''}" ${ask?'':'disabled'} onclick="choose(${j})">${esc(o.t)}</button>`).join('')}
+  ${ask?`<textarea id="tx" placeholder="Ou escreva o que você faria de verdade…"></textarea><button class="btn g" onclick="own()">Enviar minha resposta</button>`:''}
+  ${ask?'':`<div class="out">${esc(S.outcome)}</div></div><div class="card"><b>Como você se sentiu vivendo isso?</b><div class="fe"><button onclick="fb(-1)">😫<small>Drenou</small></button><button onclick="fb(0)">😐<small>Neutro</small></button><button onclick="fb(1)">⚡<small>Energizou</small></button></div>`}</div>`;
+}
+function choose(j,o,f){const ev=S.day.events[S.i];clearInterval(T);
+  if(typeof j==='number'){S.chosen=ev.options[j].t;S.outcome=ev.options[j].r}else{S.chosen=j;S.outcome=o}
+  S.forced=f;S.phase='react';day()}
+function own(){const v=$('#tx').value.trim();if(!v)return;S.chosen=v;S.outcome='Você agiu do seu jeito, e vai ver como isso pesa no resultado.';S.forced=0;clearInterval(T);S.phase='react';day()}
+function fb(v){const ev=S.day.events[S.i];if(S.forced===-1){v=-1}S.forced=0;
+  S.ans.push({time:ev.time,tag:ev.tag,subject:ev.subject,choice:S.chosen,e:v});
+  S.batt.push(Math.max(0,Math.min(100,S.batt[S.batt.length-1]+v*22-4)));S.i++;
+  S.i<S.day.events.length?next():finish()}
+async function finish(){
+  load(1);
+  try{
+    const r=await ai(`Você é um mentor de carreira. Uma pessoa testou um dia simulado de ${S.prof}. Bagagem: ${S.bg}. Modo pressão: ${S.press?'sim':'não'}.
+Decisões (e: -1 drenou, 0 neutro, 1 energizou): ${JSON.stringify(S.ans)}.
+Responda SOMENTE JSON: {"fit":0-100,"verdict":"1 frase direta","summary":"3 frases honestas sobre o padrão observado","transferable":[{"skill":"","from":"parte da bagagem"}],"gaps":[{"skill":"","how":"como aprender"}],"plan":["semana 1: ...","semana 2: ...","semana 3: ...","semana 4: ..."],"microtest":"um teste barato para fazer esta semana","questions":["3 perguntas para fazer a quem trabalha na área"],"watch":"o que pode frustrar"}
+Seja específico e honesto, sem bajulação. Português do Brasil.`);
+    S.rep=r;const h=hist();h.unshift({p:S.prof,fit:r.fit,e:S.ans.reduce((a,x)=>a+x.e,0),d:new Date().toLocaleDateString('pt-BR')});save(h);
+  }catch(e){S.rep=null}
+  S.view='report';render();
+}
+function chart(){const p=S.batt,w=300,h=110,x=i=>10+i*(w-20)/(p.length-1),y=v=>h-10-v*(h-20)/100;
+  return`<svg viewBox="0 0 ${w} ${h}"><polyline points="${p.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="var(--ac2)" stroke-width="3" stroke-linejoin="round"/>${p.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--ac)"/>`).join('')}</svg>`}
+function ring(v){const c=2*Math.PI*52;return`<svg viewBox="0 0 120 120" style="width:130px"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--br)" stroke-width="10"/><circle cx="60" cy="60" r="52" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c*v/100} ${c}" transform="rotate(-90 60 60)"/><defs><linearGradient id="g"><stop stop-color="var(--ac)"/><stop offset="1" stop-color="var(--ac2)"/></linearGradient></defs><text x="60" y="68" text-anchor="middle" fill="var(--tx)" font-size="26" font-weight="800">${esc(v)}%</text></svg>`}
+function text(){const r=S.rep;return`VIRADA · ${S.prof}\nEncaixe: ${r.fit}%\n${r.verdict}\n\n${r.summary}\n\nPlano:\n${(r.plan||[]).join('\n')}\n\nTeste desta semana: ${r.microtest}\n\nPerguntas:\n${(r.questions||[]).join('\n')}`}
+function copy(){navigator.clipboard.writeText(text()).then(()=>alert('Relatório copiado!')).catch(()=>alert('Não foi possível copiar.'))}
+function report(){const r=S.rep,tg={};S.ans.forEach(a=>(tg[a.tag]=tg[a.tag]||[]).push(a.e));
+  const bars=Object.entries(tg).map(([t,v])=>{const m=v.reduce((a,b)=>a+b,0)/v.length;return`<div class="bars"><span style="width:110px">${esc(t)}</span><div class="bar"><i style="width:${(m+1)*50}%"></i></div><span>${m>0?'⚡':m<0?'😫':'😐'}</span></div>`}).join('');
+  app.innerHTML=`<div class="logo">VIRADA</div><h1>${esc(S.prof)}: <em>seu resultado</em></h1>
+  ${r?`<div class="card row"><div>${ring(+r.fit||0)}</div><div style="flex:1"><b>${esc(r.verdict)}</b><p class="mu">${esc(r.summary)}</p></div></div>`:'<div class="card">A análise da IA falhou, mas seu gráfico está abaixo.</div>'}
+  <div class="card"><h2>Sua energia ao longo do dia</h2>${chart()}</div><div class="card"><h2>O que te energiza por tipo de tarefa</h2>${bars}</div>
+  ${r?`<div class="card"><h2>Sua bagagem que já serve</h2>${(r.transferable||[]).map(t=>`<div><span class="pill">${esc(t.skill)}</span><span class="mu">${esc(t.from)}</span></div>`).join('')}
+  <h2 style="margin-top:14px">O que falta aprender</h2>${(r.gaps||[]).map(g=>`<p style="margin:6px 0"><b>${esc(g.skill)}</b><br><span class="mu">${esc(g.how)}</span></p>`).join('')}</div>
+  <div class="card"><h2>🚀 Faça esta semana</h2><p>${esc(r.microtest)}</p><h2>💬 Pergunte a quem trabalha na área</h2>${(r.questions||[]).map(q=>`<p style="margin:6px 0">• ${esc(q)}</p>`).join('')}</div>
+  <div class="card"><h2>Plano de 30 dias</h2>${(r.plan||[]).map(x=>`<p style="margin:6px 0">${esc(x)}</p>`).join('')}<p class="mu">⚠️ ${esc(r.watch)}</p></div><button class="btn g" onclick="copy()">Copiar relatório</button>`:''}
+  <button class="btn" onclick="Object.assign(S,{view:'home',prof:''});render()">Testar outra profissão</button>`}
+function historyView(){app.innerHTML=`<div class="logo">VIRADA</div><h1>Meus testes</h1>${hist().map(h=>`<div class="card row"><div><b>${esc(h.p)}</b><br><span class="mu">${esc(h.d)}</span></div><div><b>${esc(h.fit)}%</b><br><span class="mu">energia ${h.e>0?'+':''}${h.e}</span></div></div>`).join('')}<button class="btn g" onclick="S.view='home';render()">Voltar</button>`}
+render();
+</script>
+</body>
+</html>
